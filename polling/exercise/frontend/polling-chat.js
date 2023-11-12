@@ -46,6 +46,15 @@ async function getNewMsgs() {
   setTimeout(getNewMsgs, INTERVAL);
 }
 
+let timeToMakeNextRequest = 0;
+async function requestAnimationFrameTimer(time) {
+  if (timeToMakeNextRequest <= time) {
+    await getNewMsgs();
+    timeToMakeNextRequest = time + INTERVAL;
+  }
+  requestAnimationFrame(requestAnimationFrameTimer);
+}
+
 function render() {
   // as long as allChat is holding all current messages, this will render them
   // into the ui. yes, it's inefficent. yes, it's fine for this example
@@ -60,4 +69,4 @@ const template = (user, msg) =>
   `<li class="collection-item"><span class="badge">${user}</span>${msg}</li>`;
 
 // make the first request
-getNewMsgs();
+requestAnimationFrame(requestAnimationFrameTimer);
