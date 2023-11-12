@@ -15,13 +15,35 @@ chat.addEventListener("submit", function (e) {
 });
 
 async function postNewMsg(user, text) {
-  // post to /poll a new message
-  // write code here
+  const data = {
+    user,
+    text,
+  };
+
+  const body = JSON.stringify(data);
+  const options = {
+    method: "POST",
+    body,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  await fetch("/poll", options);
 }
 
 async function getNewMsgs() {
-  // poll the server
-  // write code here
+  let result = {};
+  try {
+    const response = await fetch("/poll");
+    result = await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+
+  allChat = result.msg;
+  render();
+  setTimeout(getNewMsgs, INTERVAL);
 }
 
 function render() {
